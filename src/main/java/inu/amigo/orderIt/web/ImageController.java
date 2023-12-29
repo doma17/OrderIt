@@ -3,10 +3,9 @@ package inu.amigo.orderIt.web;
 import inu.amigo.orderIt.domain.item.Image;
 import inu.amigo.orderIt.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/images")
@@ -18,11 +17,15 @@ public class ImageController {
         this.imageService = imageService;
     }
 
+    @PostMapping
+    public String upload(@RequestPart MultipartFile imageFile) {
+        Image saveImage = imageService.saveImage(imageFile);
+        return saveImage.getUrl(); // 이미지 URL 반환
+    }
+
     @GetMapping("/{imageId}")
     public String getImagePath(@PathVariable Long imageId) {
-        // 이미지 ID를 이용해 요청시 반환
-        Image image = imageService.getImageById(imageId);
-
-        return "/static/images/" + image.getImageId();
+        Image saveImage = imageService.getImageById(imageId);
+        return saveImage.getUrl(); // 이미지 URL 반환
     }
 }

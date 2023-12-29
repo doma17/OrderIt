@@ -2,11 +2,14 @@ package inu.amigo.orderIt.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
+@RequestMapping("/order")
 public class OrderController {
 
-    @GetMapping("/order")
+    @GetMapping()
     public String list() {
         return "";
     }

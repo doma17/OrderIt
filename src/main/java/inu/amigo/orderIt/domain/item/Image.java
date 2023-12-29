@@ -5,18 +5,35 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
+/**
+ * 이미지 엔티티
+ */
 @Entity
 @Getter
 @Setter
-@RequiredArgsConstructor
+@NoArgsConstructor
 public class Image {
 
+    /**
+     * 이미지 번호 (Auto Increment)
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long imageId;
 
+    /**
+     * 이미지 UUID
+     */
+    private UUID uuid = UUID.randomUUID();
+
+    /**
+     * 이미지 url
+     */
     private String url;
 }
