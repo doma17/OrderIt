@@ -8,6 +8,4 @@ import java.util.UUID;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
-    Image findByImageId(Long imageId);
-    Image findByUuid(UUID uuid);
 }

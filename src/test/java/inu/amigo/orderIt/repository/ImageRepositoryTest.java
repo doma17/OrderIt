@@ -24,7 +24,6 @@ public class ImageRepositoryTest {
 
         // When
         Image savedImage = imageRepository.save(image);
-        Image foundImage = imageRepository.findByImageId(savedImage.getImageId());
 
         // Then
         assertThat(foundImage).isNotNull();

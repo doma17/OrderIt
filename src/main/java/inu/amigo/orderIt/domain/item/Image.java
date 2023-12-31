@@ -27,13 +27,9 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long imageId;
 
-    /**
-     * 이미지 UUID
-     */
-    private UUID uuid = UUID.randomUUID();
 
     /**
-     * 이미지 url
+     * 이미지 이름
      */
-    private String url;
+    private String imageName;
 }
