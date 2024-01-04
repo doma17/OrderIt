@@ -1,27 +1,34 @@
 package inu.amigo.orderIt.repository;
 
+import inu.amigo.orderIt.domain.item.Coffee;
+import inu.amigo.orderIt.domain.item.Dessert;
 import inu.amigo.orderIt.domain.item.Item;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
+import inu.amigo.orderIt.domain.item.NonCoffee;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public class ItemRepository {
+public interface ItemRepository extends JpaRepository<Item, Long> {
+    // 전체 아이템 조회 ?
 
-    @PersistenceContext
-    EntityManager em;
+    /**
+     * NonCoffee 조회
+     */
+    @Query("SELECT n FROM NonCoffee n")
+    List<NonCoffee> findAllNonCoffees();
 
-    public void save(Item item) {
-        if (item.getId() == null)
-            em.persist(item);
-        else
-            em.merge(item);
-    }
+    /**
+     * Coffee 조회
+     */
+    @Query("SELECT c FROM Coffee c")
+    List<Coffee> findAllCoffees();
 
-    public Item findOne(long id) { return em.find(Item.class, id); }
-    public List<Item> findAll() {
-        return em.createQuery("select i from Item i", Item.class).getResultList();
-    }
+    /**
+     * Dessert 조회
+     */
+    @Query("SELECT d FROM Dessert d")
+    List<Dessert> findAllDesserts();
 }
