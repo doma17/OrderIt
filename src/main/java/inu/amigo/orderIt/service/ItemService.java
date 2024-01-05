@@ -16,6 +16,10 @@ public class ItemService {
     @Autowired
     private ItemRepository itemRepository;
 
+    public void save(Item item) {
+        itemRepository.save(item);
+    }
+
     public List<Item> getAllItems() {
         return itemRepository.findAll();
     }

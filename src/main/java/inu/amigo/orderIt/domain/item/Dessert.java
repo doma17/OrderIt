@@ -12,6 +12,6 @@ import lombok.ToString;
 public class Dessert extends Item {
     @Override
     public String toString() {
-        return "Book{}";
+        return "Dessert{}";
     }
 }

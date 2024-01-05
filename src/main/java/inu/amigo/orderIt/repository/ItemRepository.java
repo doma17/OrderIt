@@ -31,4 +31,5 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
      */
     @Query("SELECT d FROM Dessert d")
     List<Dessert> findAllDesserts();
+
 }

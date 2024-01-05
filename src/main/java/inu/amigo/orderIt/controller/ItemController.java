@@ -6,22 +6,31 @@ import inu.amigo.orderIt.domain.item.Item;
 import inu.amigo.orderIt.domain.item.NonCoffee;
 import inu.amigo.orderIt.service.ItemService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/api/items")
+@RestController
+@RequestMapping("/api")
 @Tag(name = "Item API", description = "Item 반환하는 API")
 public class ItemController {
 
     @Autowired
     ItemService itemService;
 
-    @GetMapping
+    // createItemForm 추가 필요
+    @GetMapping("/new")
+    public String createForm() {
+        return "createItemForm";
+    }
+
+    @PostMapping("/new")
+    public void save(@RequestBody Item item) {
+        itemService.save(item);
+    }
+
+    @GetMapping("/items")
     public List<Item> getAllItems() {
         return itemService.getAllItems();
     }
@@ -40,4 +49,5 @@ public class ItemController {
     public List<Dessert> getAllDesserts() {
         return itemService.getAllDesserts();
     }
+
 }
