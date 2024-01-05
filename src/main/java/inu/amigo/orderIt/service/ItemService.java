@@ -33,30 +33,36 @@ public class ItemService {
 
     public void save(Item item, MultipartFile imageFile) throws IOException {
         if (imageFile.isEmpty()) {
-            log.error("imageFile.isEmpty()");
-            throw new IOException();
+            log.error("Image file is empty");
+            throw new IllegalArgumentException("Image file is empty");
         }
 
+        String savedImagePath = saveImage(imageFile, item.getId());
+        item.setImagePath(savedImagePath);
+
+        itemRepository.save(item);
     }
 
-    public String saveImage(MultipartFile file, String itemId) throws IOException {
+    public String saveImage(MultipartFile file, Long itemId) throws IOException {
         if (file.getOriginalFilename() == null) {
-            log.error("file.getOriginalFilename() is NULL");
-            throw new IOException();
+            log.error("Original filename is NULL");
+            throw new IllegalArgumentException("Original filename is NULL");
         }
+
         String originalName = file.getOriginalFilename();
         String fileName = itemId + "_" + StringUtils.cleanPath(originalName);
 
         // 로컬 경로에 파일 저장
         Path uploadLocation = Paths.get(uploadPath);
+        Files.createDirectories(uploadLocation); // 디렉토리가 존재하지 않으면 생성
         Path filePath = uploadLocation.resolve(fileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        log.info("uploadPath + fileName = %s", (uploadPath + fileName));
-        return uploadPath + fileName; // 저장된 파일의 이름 반환
+        log.info("Uploaded file path: {}", filePath);
+        return filePath.toString(); // 저장된 파일의 경로 반환
     }
 
-    public List<Item> getAllItems() {
+    public List<? extends Item> getAllItems() {
         return itemRepository.findAll();
     }
 

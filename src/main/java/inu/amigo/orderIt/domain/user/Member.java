@@ -28,9 +28,16 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime createdAt;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime modifiedAt;
+
+//    public Member(String username, String password, String email, Role role) {
+//        this.username = username;
+//        this.password = password;
+//        this.email = email;
+//        this.role = role;
+//    }
 }

@@ -39,7 +39,7 @@ class ItemServiceTest {
         when(itemRepository.findAll()).thenReturn(fakeItemList);
 
         // Test
-        List<Item> result = itemService.getAllItems();
+        List<? extends Item> result = itemService.getAllItems();
 
         // Result
         assertEquals(fakeItemList.size(), result.size());

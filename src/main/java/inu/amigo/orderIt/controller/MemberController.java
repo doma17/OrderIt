@@ -16,16 +16,24 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Member Page")
 public class MemberController {
 
-    @Autowired
-    MemberService memberService;
+    private final MemberService memberService;
 
+    @Autowired
+    public MemberController(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
+    /**
+     * 회원 가입
+     */
     @PostMapping("/register")
     public ResponseEntity<String> registerMember(@RequestBody MemberDto memberDto) {
-        // 회원가입
         try {
-            memberService.registerMember(memberDto);
+            memberService.register(memberDto);
+
             return new ResponseEntity<>("Member registered successfully", HttpStatus.OK);
         } catch (RuntimeException e) {
+
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

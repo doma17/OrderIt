@@ -20,8 +20,12 @@ import java.util.List;
 @Tag(name = "Item API", description = "Item API")
 public class ItemController {
 
+    private final ItemService itemService;
+
     @Autowired
-    ItemService itemService;
+    public ItemController(ItemService itemService) {
+        this.itemService = itemService;
+    }
 
     @PostMapping("/new")
     public ResponseEntity<String> save(@RequestBody Item item,
@@ -36,7 +40,7 @@ public class ItemController {
     }
 
     @GetMapping("/items")
-    public List<Item> getAllItems() {
+    public List<? extends Item> getAllItems() {
         return itemService.getAllItems();
     }
 
