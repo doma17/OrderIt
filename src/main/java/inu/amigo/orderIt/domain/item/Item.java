@@ -3,6 +3,7 @@ package inu.amigo.orderIt.domain.item;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,7 +12,7 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "DTYPE")
-@Getter @Setter
+@Getter @Setter @ToString
 public abstract class Item {
 
     @Id @GeneratedValue
@@ -21,18 +22,15 @@ public abstract class Item {
     private String name;
     private int price;
 
-//    private LocalDateTime createdAt;
-//    private LocalDateTime updatedAt;
+    @ManyToMany(mappedBy = "items")
+    private List<Category> categories = new ArrayList<Category>();
 
-//    @ManyToMany(mappedBy = "items")
-//    private List<Category> categories = new ArrayList<Category>();
-
-    @Override
-    public String toString() {
-        return "Item{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", price=" + price +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Item{" +
+//                "id=" + id +
+//                ", name='" + name + '\'' +
+//                ", price=" + price +
+//                '}';
+//    }
 }

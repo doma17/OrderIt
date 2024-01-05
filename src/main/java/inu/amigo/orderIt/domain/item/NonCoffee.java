@@ -10,7 +10,7 @@ import lombok.ToString;
 @DiscriminatorValue("N")
 @Getter @Setter
 public class NonCoffee extends Item {
-    TempOption tempOption;
+    private TempOption tempOption;
 
     @Override
     public String toString() {
