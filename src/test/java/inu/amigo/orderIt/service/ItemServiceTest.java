@@ -5,7 +5,6 @@ import inu.amigo.orderIt.domain.item.Dessert;
 import inu.amigo.orderIt.domain.item.Item;
 import inu.amigo.orderIt.domain.item.NonCoffee;
 import inu.amigo.orderIt.repository.ItemRepository;
-import inu.amigo.orderIt.service.ItemService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -31,69 +30,69 @@ class ItemServiceTest {
 
     @Test
     void getAllItems() {
-        // 가짜 데이터 생성
+        // create fake data
         List<Item> fakeItemList = Arrays.asList(
                 new Coffee(), new NonCoffee(), new Dessert()
         );
 
-        // Mock 설정
+        // Mock Setting
         when(itemRepository.findAll()).thenReturn(fakeItemList);
 
-        // 테스트
+        // Test
         List<Item> result = itemService.getAllItems();
 
-        // 검증
+        // Result
         assertEquals(fakeItemList.size(), result.size());
     }
 
     @Test
     void getAllNonCoffees() {
-        // 가짜 데이터 생성
+        // create fake data
         List<NonCoffee> fakeNonCoffeeList = Arrays.asList(
                 new NonCoffee(), new NonCoffee()
         );
 
-        // Mock 설정
+        // Mock Setting
         when(itemRepository.findAllNonCoffees()).thenReturn(fakeNonCoffeeList);
 
-        // 테스트
+        // Test
         List<NonCoffee> result = itemService.getAllNonCoffees();
 
-        // 검증
+        // Result
         assertEquals(fakeNonCoffeeList.size(), result.size());
     }
 
     @Test
     void getAllCoffees() {
-        // 가짜 데이터 생성
+        // create fake data
         List<Coffee> fakeCoffeeList = Arrays.asList(
                 new Coffee(), new Coffee(), new Coffee()
         );
 
-        // Mock 설정
+        // Mock Setting
         when(itemRepository.findAllCoffees()).thenReturn(fakeCoffeeList);
 
-        // 테스트
+        // Test
         List<Coffee> result = itemService.getAllCoffees();
 
-        // 검증
+        // Result
         assertEquals(fakeCoffeeList.size(), result.size());
     }
 
     @Test
     void getAllDesserts() {
-        // 가짜 데이터 생성
+        // create fake data
         List<Dessert> fakeDessertList = Arrays.asList(
                 new Dessert(), new Dessert()
         );
 
-        // Mock 설정
+        // Mock Setting
         when(itemRepository.findAllDesserts()).thenReturn(fakeDessertList);
 
-        // 테스트
+        // Test
         List<Dessert> result = itemService.getAllDesserts();
 
-        // 검증
+        // Result
         assertEquals(fakeDessertList.size(), result.size());
     }
 }

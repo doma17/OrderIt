@@ -3,12 +3,13 @@ package inu.amigo.orderIt.domain.item;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter @Setter
+@Getter @Setter @ToString
 public class Category {
 
     @Id @GeneratedValue
@@ -17,6 +18,9 @@ public class Category {
 
     private String name;
 
+    /**
+     * 다대다 관계 -> CATEGORY_ID, ITEM_ID로 이루어진 테이블이 생성된다.
+     */
     @ManyToMany
     @JoinTable(name = "CATEGORY_ITEM",
             joinColumns = @JoinColumn(name = "CATEGORY_ID"),
@@ -33,13 +37,5 @@ public class Category {
     public void addChildCategory(Category child) {
         this.child.add(child);
         child.setParent(this);
-    }
-
-    @Override
-    public String toString() {
-        return "Category{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
     }
 }

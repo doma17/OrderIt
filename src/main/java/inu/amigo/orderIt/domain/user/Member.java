@@ -12,14 +12,12 @@ import java.time.LocalDateTime;
  * 멤버 엔티티
  */
 @Entity
-@Getter
-@Setter
-@ToString(exclude = "password") // toString() method will not print out PASSWORD!
+@Getter @Setter @ToString(exclude = "password") // toString() method will not print out PASSWORD!
 public class Member {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long memberId;
+    @Id @GeneratedValue
+    @Column(name = "MEMBER_ID")
+    private Long id;
 
     private String username;
     @JsonIgnore

@@ -8,11 +8,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/")
-@Tag(name = "Home Page", description = "홈페이지를 반환합니다.")
+@Tag(name = "Page")
 public class HomeController {
 
     @GetMapping
     public String home() {
         return "home";
+    }
+
+    @GetMapping("/new")
+    public String createForm() {
+        return "createItemForm";
     }
 }

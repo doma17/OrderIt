@@ -12,8 +12,6 @@ import java.util.List;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    // 전체 아이템 조회 ?
-
     /**
      * NonCoffee 조회
      */

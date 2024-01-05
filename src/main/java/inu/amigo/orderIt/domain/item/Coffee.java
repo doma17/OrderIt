@@ -8,7 +8,8 @@ import lombok.ToString;
 @Entity
 @DiscriminatorValue("C")
 @Getter @Setter @ToString
-public class Coffee extends Item{
+public class Coffee extends Item {
+
     @Enumerated(EnumType.STRING)
     private TempOption tempOption;
 
