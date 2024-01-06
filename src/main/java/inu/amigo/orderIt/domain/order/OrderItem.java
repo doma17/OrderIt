@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter @Setter
 public class OrderItem {
@@ -23,4 +26,7 @@ public class OrderItem {
 
     private int orderPrice; //주문 가격
     private int count;      //주문 수량
+
+    @OneToMany(mappedBy = "orderItem")
+    private List<OrderItemOption> orderItemOptions = new ArrayList<>();
 }

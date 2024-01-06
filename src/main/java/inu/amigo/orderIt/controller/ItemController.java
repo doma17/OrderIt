@@ -1,13 +1,14 @@
 package inu.amigo.orderIt.controller;
 
-import inu.amigo.orderIt.domain.item.Coffee;
-import inu.amigo.orderIt.domain.item.Dessert;
 import inu.amigo.orderIt.domain.item.Item;
-import inu.amigo.orderIt.domain.item.NonCoffee;
+import inu.amigo.orderIt.domain.item.Menu;
+import inu.amigo.orderIt.domain.item.Option;
+import inu.amigo.orderIt.dto.ItemDto;
+import inu.amigo.orderIt.exception.FileValidationException;
 import inu.amigo.orderIt.service.ItemService;
+import inu.amigo.orderIt.service.OptionsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,8 +17,8 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
-@Tag(name = "Item API", description = "Item API")
+@RequestMapping("/api/items")
+@Tag(name = "Item API")
 public class ItemController {
 
     private final ItemService itemService;
@@ -27,36 +28,26 @@ public class ItemController {
         this.itemService = itemService;
     }
 
-    @PostMapping("/new")
-    public ResponseEntity<String> save(@RequestBody Item item,
-                               @RequestPart("image") MultipartFile imageFile) {
-        try {
-            itemService.save(item, imageFile);
-            return ResponseEntity.ok("Item and image saved successfully.");
-        } catch (IOException e) {
-            String errorMessage = "Error saving item and image: " + e.getMessage();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorMessage);
-        }
-    }
-
-    @GetMapping("/items")
-    public List<? extends Item> getAllItems() {
+    // 전체 아이템 목록 조회
+    @GetMapping()
+    public List<Item> getAllItems() {
         return itemService.getAllItems();
     }
 
-    @GetMapping("/coffees")
-    public List<Coffee> getAllCoffees() {
-        return itemService.getAllCoffees();
+    // 아이템 등록
+    @PostMapping()
+    public Item createItem(@ModelAttribute ItemDto itemDto, @RequestParam("imageFile") MultipartFile imageFile) {
+        try {
+            return itemService.createItem(itemDto, imageFile);
+        } catch (IOException | FileValidationException e) {
+            // 예외 발생 시 예외 메시지를 반환
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
-    @GetMapping("/non-coffees")
-    public List<NonCoffee> getAllNonCoffees() {
-        return itemService.getAllNonCoffees();
+    // 특정 메뉴의 아이템 목록 조회
+    @GetMapping("/{menu}")
+    public List<Item> getItemsByMenu(@PathVariable Menu menu) {
+        return itemService.getItemsByMenu(menu);
     }
-
-    @GetMapping("/desserts")
-    public List<Dessert> getAllDesserts() {
-        return itemService.getAllDesserts();
-    }
-
 }

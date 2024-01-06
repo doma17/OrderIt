@@ -33,11 +33,4 @@ public class Member {
 
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime modifiedAt;
-
-//    public Member(String username, String password, String email, Role role) {
-//        this.username = username;
-//        this.password = password;
-//        this.email = email;
-//        this.role = role;
-//    }
 }
