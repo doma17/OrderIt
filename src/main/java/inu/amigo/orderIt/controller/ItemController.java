@@ -2,14 +2,12 @@ package inu.amigo.orderIt.controller;
 
 import inu.amigo.orderIt.domain.item.Item;
 import inu.amigo.orderIt.domain.item.Menu;
-import inu.amigo.orderIt.domain.item.Option;
-import inu.amigo.orderIt.dto.ItemDto;
+import inu.amigo.orderIt.dto.ItemRequestDto;
+import inu.amigo.orderIt.dto.ItemResponseDto;
 import inu.amigo.orderIt.exception.FileValidationException;
 import inu.amigo.orderIt.service.ItemService;
-import inu.amigo.orderIt.service.OptionsService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,15 +28,15 @@ public class ItemController {
 
     // 전체 아이템 목록 조회
     @GetMapping()
-    public List<Item> getAllItems() {
+    public List<ItemResponseDto> getAllItems() {
         return itemService.getAllItems();
     }
 
     // 아이템 등록
     @PostMapping()
-    public Item createItem(@ModelAttribute ItemDto itemDto, @RequestParam("imageFile") MultipartFile imageFile) {
+    public ItemResponseDto createItem(@ModelAttribute ItemRequestDto itemRequestDto, @RequestParam("imageFile") MultipartFile imageFile) {
         try {
-            return itemService.createItem(itemDto, imageFile);
+            return itemService.createItem(itemRequestDto, imageFile);
         } catch (IOException | FileValidationException e) {
             // 예외 발생 시 예외 메시지를 반환
             throw new RuntimeException(e.getMessage());
@@ -47,7 +45,7 @@ public class ItemController {
 
     // 특정 메뉴의 아이템 목록 조회
     @GetMapping("/{menu}")
-    public List<Item> getItemsByMenu(@PathVariable Menu menu) {
+    public List<ItemResponseDto> getItemsByMenu(@PathVariable Menu menu) {
         return itemService.getItemsByMenu(menu);
     }
 }

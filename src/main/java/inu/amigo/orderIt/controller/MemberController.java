@@ -33,7 +33,6 @@ public class MemberController {
 
             return new ResponseEntity<>("Member registered successfully", HttpStatus.OK);
         } catch (RuntimeException e) {
-
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }

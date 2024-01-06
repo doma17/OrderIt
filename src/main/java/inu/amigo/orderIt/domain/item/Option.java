@@ -9,6 +9,7 @@ import lombok.Setter;
 public class Option {
 
     @Id @GeneratedValue
+    @Column(name = "OPTION_ID")
     private Long id;
 
     private String name;
