@@ -25,7 +25,9 @@ public class OptionsService {
     }
 
     /**
-     * 모든 옵션 반환
+     * 모든 옵션을 반환합니다.
+     *
+     * @return 모든 Option 엔티티를 담은 리스트
      */
     public List<Option> getAllOptions() {
         log.trace("getAllOptions() 실행");
@@ -33,7 +35,10 @@ public class OptionsService {
     }
 
     /**
-     * id 리스트를 -> option 리스트 반환
+     * 주어진 id 리스트에 해당하는 옵션들을 반환합니다.
+     *
+     * @param optionIds 조회할 옵션들의 id 리스트
+     * @return 조회된 Option 엔티티를 담은 리스트
      */
     public List<Option> getOptionsByIds(List<Long> optionIds) {
         log.trace("getOptionsByIds(List<Long> optionIds) 실행");
@@ -41,7 +46,10 @@ public class OptionsService {
     }
 
     /**
-     * Option 생성
+     * 주어진 Option을 생성하고 저장합니다.
+     *
+     * @param option 저장할 Option 엔티티
+     * @return 저장된 Option 엔티티
      */
     public Option createOption(Option option) {
         log.trace("createOption(Option option) 실행");
@@ -49,7 +57,11 @@ public class OptionsService {
     }
 
     /**
-     * Item에 포함된 Option목록 반환
+     * 주어진 Item에 속한 Option 목록을 반환합니다.
+     *
+     * @param itemId 조회할 Item의 식별자
+     * @return Item에 속한 Option 엔티티를 담은 리스트
+     * @throws IllegalArgumentException 주어진 itemId에 해당하는 Item이 존재하지 않을 경우 발생하는 예외
      */
     public List<Option> getOptionsByItemId(Long itemId) {
         log.trace("getOptionsByItemId(Long itemId) 실행");
@@ -66,6 +78,13 @@ public class OptionsService {
         }
     }
 
+    /**
+     * 주어진 optionId에 해당하는 Option을 반환합니다.
+     *
+     * @param optionId 조회할 Option의 식별자
+     * @return 조회된 Option 엔티티
+     * @throws IllegalArgumentException 주어진 optionId에 해당하는 Option이 존재하지 않을 경우 발생하는 예외
+     */
     public Option getOptionById(Long optionId) {
         log.trace("getOptionById(Long optionId) 실행");
         Optional<Option> optionalOption = optionRepository.findById(optionId);

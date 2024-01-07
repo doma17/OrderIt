@@ -29,8 +29,9 @@ public class MemberService {
      */
     public void register(MemberDto memberDto) throws IllegalStateException {
         // 중복 사용자 확인
-        if (memberRepository.findByUsername(memberDto.getUsername()) != null) {
-            log.debug("유저 중복");
+        String username = memberDto.getUsername();
+        if (memberRepository.findByUsername(username).isPresent()) {
+            log.error("유저 중복");
             throw new IllegalStateException("Username is already taken");
         }
         // 패스워드 암호화
@@ -55,11 +56,23 @@ public class MemberService {
      * @param memberDto MemberDto 객체
      * @return 변환된 Member 엔티티
      */
-    private static Member convertDtoToMember(MemberDto memberDto) {
+    protected static Member convertDtoToMember(MemberDto memberDto) {
         Member newMember = new Member();
         newMember.setUsername(memberDto.getUsername());
-        newMember.setPassword(newMember.getPassword());
+        newMember.setPassword(memberDto.getPassword());
         newMember.setEmail(memberDto.getEmail());
         return newMember;
+    }
+
+    public Member getMemberById(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(
+                () -> new IllegalArgumentException("Member with ID " + memberId + " not found.")
+        );
+    }
+
+    public Member getMemberByUsername(String username) {
+        return memberRepository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("Member with Username " + username + " not found.")
+        );
     }
 }

@@ -23,14 +23,16 @@ public class ImageService {
     private String imageBasePath;
 
     private static final List<String> ALLOWED_EXTENSIONS = List.of("jpg", "jpeg", "png");
-    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+    // 이미지 최대 크기 10MB
+    public static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
 
     /**
      * 이미지를 저장하고 저장된 이미지의 상대 경로를 반환하는 메서드
      *
      * @param imageFile 저장할 이미지 파일
-     * @return 저장된 이미지의 상대 경로
-     * @throws IOException          이미지 저장 중 예외 발생 시
+     * @return imagePath 저장된 이미지의 상대 경로
+     * @throws IOException 이미지 저장 중 예외 발생 시
      * @throws FileValidationException 이미지 유효성 검사 실패 시
      */
     public String saveImage(MultipartFile imageFile) throws IOException {
@@ -46,10 +48,14 @@ public class ImageService {
      * 이미지 유효성을 검사하는 메서드
      *
      * @param imageFile 유효성을 검사할 이미지 파일
-     * @throws IOException          이미지 파일이 비어 있거나, 허용되지 않는 확장자, 크기 초과 등의 예외 발생 시
      * @throws FileValidationException 이미지 유효성 검사 실패 시
      */
     private void validateImage(MultipartFile imageFile) throws FileValidationException {
+        if (imageBasePath == null) {
+            log.error("ImageBasePath is null.");
+            throw new FileValidationException("ImageBasePath is null.");
+        }
+
         if (imageFile.isEmpty()) {
             log.error("Image file is empty.");
             throw new FileValidationException("Image file is empty.");
