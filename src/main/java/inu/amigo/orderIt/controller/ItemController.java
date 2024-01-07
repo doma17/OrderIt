@@ -1,13 +1,18 @@
 package inu.amigo.orderIt.controller;
 
-import inu.amigo.orderIt.domain.item.Item;
 import inu.amigo.orderIt.domain.item.Menu;
 import inu.amigo.orderIt.dto.ItemRequestDto;
 import inu.amigo.orderIt.dto.ItemResponseDto;
 import inu.amigo.orderIt.exception.FileValidationException;
 import inu.amigo.orderIt.service.ItemService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,12 +33,14 @@ public class ItemController {
 
     // 전체 아이템 목록 조회
     @GetMapping()
+    @Operation(description = "모든 Item 조회")
     public List<ItemResponseDto> getAllItems() {
         return itemService.getAllItems();
     }
 
     // 아이템 등록
     @PostMapping()
+    @Operation(description = "Item 생성")
     public ItemResponseDto createItem(@ModelAttribute ItemRequestDto itemRequestDto, @RequestParam("imageFile") MultipartFile imageFile) {
         try {
             return itemService.createItem(itemRequestDto, imageFile);
@@ -45,7 +52,20 @@ public class ItemController {
 
     // 특정 메뉴의 아이템 목록 조회
     @GetMapping("/{menu}")
-    public List<ItemResponseDto> getItemsByMenu(@PathVariable Menu menu) {
+    @Operation(description = "특정 메뉴 카테고리의 Item 조회")
+    public List<ItemResponseDto> getItemsByMenu (@PathVariable Menu menu) {
         return itemService.getItemsByMenu(menu);
+    }
+
+    @DeleteMapping("delete/{itemId}")
+    @Operation(description = "ItemId로 Item 삭제")
+    public ResponseEntity<String> deleteItemById (@PathVariable Long itemId) {
+        try {
+            itemService.deleteItem(itemId);
+
+            return new ResponseEntity<>("Member registered successfully", HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
     }
 }

@@ -175,9 +175,14 @@ public class ItemService {
     private ItemResponseDto convertItemToResponseDto(Item item) {
         log.trace("Item to ItemResponseDto Mapper 실행");
         ItemResponseDto itemResponseDto = new ItemResponseDto();
+        itemResponseDto.setItem_id(item.getId());
         itemResponseDto.setName(item.getName());
         itemResponseDto.setPrice(item.getPrice());
         itemResponseDto.setImagePath(item.getImagePath());
         return itemResponseDto;
+    }
+
+    public void deleteItem(Long itemId) {
+        itemRepository.deleteById(itemId);
     }
 }
