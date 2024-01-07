@@ -24,21 +24,33 @@ public class OptionsService {
         this.optionRepository = optionRepository;
     }
 
+    /**
+     * 모든 옵션 반환
+     */
     public List<Option> getAllOptions() {
         log.trace("getAllOptions() 실행");
         return optionRepository.findAll();
     }
 
+    /**
+     * id 리스트를 -> option 리스트 반환
+     */
     public List<Option> getOptionsByIds(List<Long> optionIds) {
         log.trace("getOptionsByIds(List<Long> optionIds) 실행");
         return optionRepository.findAllById(optionIds);
     }
 
+    /**
+     * Option 생성
+     */
     public Option createOption(Option option) {
         log.trace("createOption(Option option) 실행");
         return optionRepository.save(option);
     }
 
+    /**
+     * Item에 포함된 Option목록 반환
+     */
     public List<Option> getOptionsByItemId(Long itemId) {
         log.trace("getOptionsByItemId(Long itemId) 실행");
         // 아이템 ID로 아이템을 조회

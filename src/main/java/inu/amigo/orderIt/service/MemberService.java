@@ -16,16 +16,18 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    // Spring Security
-//    private final BCryptPasswordEncoder passwordEncoder;
-
     @Autowired
     public MemberService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
-//        this.passwordEncoder = passwordEncoder;
     }
 
-    public void register(MemberDto memberDto) {
+    /**
+     * 회원가입 서비스
+     *
+     * @param memberDto 회원가입 정보를 담은 DTO
+     * @throws IllegalStateException 중복된 사용자일 경우 발생하는 예외
+     */
+    public void register(MemberDto memberDto) throws IllegalStateException {
         // 중복 사용자 확인
         if (memberRepository.findByUsername(memberDto.getUsername()) != null) {
             log.debug("유저 중복");
@@ -34,10 +36,7 @@ public class MemberService {
         // 패스워드 암호화
 
         // Member 엔티티 생성 및 저장
-        Member newMember = new Member();
-        newMember.setUsername(memberDto.getUsername());
-        newMember.setPassword(newMember.getPassword());
-        newMember.setEmail(memberDto.getEmail());
+        Member newMember = convertDtoToMember(memberDto);
 
         // 기본 역할 설정 (USER)
         newMember.setRole(Role.USER);
@@ -48,5 +47,19 @@ public class MemberService {
 
         memberRepository.save(newMember);
         log.info("새로운 멤버 저장");
+    }
+
+    /**
+     * MemberDto to Member Mapper
+     *
+     * @param memberDto MemberDto 객체
+     * @return 변환된 Member 엔티티
+     */
+    private static Member convertDtoToMember(MemberDto memberDto) {
+        Member newMember = new Member();
+        newMember.setUsername(memberDto.getUsername());
+        newMember.setPassword(newMember.getPassword());
+        newMember.setEmail(memberDto.getEmail());
+        return newMember;
     }
 }

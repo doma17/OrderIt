@@ -9,19 +9,12 @@ import inu.amigo.orderIt.exception.FileValidationException;
 import inu.amigo.orderIt.repository.ItemRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @Slf4j
@@ -30,24 +23,19 @@ public class ItemService {
     private final ItemRepository itemRepository;
 
     private final OptionsService optionsService;
-
-    @Value("${image.base-path}")
-    private String imageBasePath;
-
-    // 이미지 파일의 허용된 확장자 목록
-    private static final List<String> ALLOWED_EXTENSIONS = List.of("jpg", "jpeg", "png");
-
-    // 이미지 파일의 최대 크기 (10MB로 설정)
-    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
+    private final ImageService imageService;
 
     @Autowired
-    public ItemService(ItemRepository itemRepository, OptionsService optionsService) {
+    public ItemService(ItemRepository itemRepository, OptionsService optionsService, ImageService imageService) {
         this.itemRepository = itemRepository;
         this.optionsService = optionsService;
+        this.imageService = imageService;
     }
 
     /**
-     * 모든 Item 반환 (Option 포함 X)
+     * 모든 Item을 반환합니다. (Option은 포함되지 않습니다.)
+     *
+     * @return 모든 Item의 정보를 담은 ItemResponseDto 리스트
      */
     public List<ItemResponseDto> getAllItems() {
         log.trace("getAllItems() 실행");
@@ -63,7 +51,10 @@ public class ItemService {
     }
 
     /**
-     * 메뉴 카테고리에 따른 Item 리스트 반환 로직
+     * 특정 메뉴 카테고리에 따른 Item 리스트를 반환합니다.
+     *
+     * @param menu 조회할 메뉴 카테고리
+     * @return 해당 메뉴에 속하는 Item의 정보를 담은 ItemResponseDto 리스트
      */
     public List<ItemResponseDto> getItemsByMenu(Menu menu) {
         log.trace("getItemsByMenu(Menu menu) 실행");
@@ -81,6 +72,12 @@ public class ItemService {
 
     /**
      * 아이템 생성 로직
+     *
+     * @param itemRequestDto 생성할 아이템의 정보를 담은 DTO
+     * @param imageFile      업로드된 이미지 파일
+     * @return 생성된 아이템의 정보를 담은 ItemResponseDto
+     * @throws IOException               이미지 파일 처리 중 발생하는 예외
+     * @throws FileValidationException   이미지 유효성 검사 실패 시 예외
      */
     public ItemResponseDto createItem(ItemRequestDto itemRequestDto, MultipartFile imageFile) throws IOException {
         // ItemDto -> Item Mapping
@@ -95,11 +92,8 @@ public class ItemService {
         // Item 엔티티에 options 설정
         item.setOptions(options);
 
-        // 이미지 유효성 검사
-        validateImage(imageFile);
-
-        // 이미지를 서버의 로컬에 저장
-        String imagePath = saveImageLocal(imageFile);
+        // 이미지 유효성 검사 및 저장
+        String imagePath = imageService.saveImage(imageFile);
         item.setImagePath(imagePath);
 
         // 아이템을 저장하고 저장된 아이템을 반환
@@ -109,68 +103,11 @@ public class ItemService {
     }
 
     /**
-     * 이미지 유효성 검사 로직 메서드
-     */
-    private void validateImage(MultipartFile imageFile) {
-        // 파일이 존재하는지 확인
-        if (imageFile.isEmpty()) {
-            log.error("이미지 파일이 비어있음");
-            throw new FileValidationException("Image file is empty.");
-        }
-
-        // 파일 확장자 확인
-        String fileExtension = StringUtils.getFilenameExtension(imageFile.getOriginalFilename());
-        if (!ALLOWED_EXTENSIONS.contains(fileExtension.toLowerCase())) {
-            log.error("이미지 확장자가 아님");
-            throw new FileValidationException("Only " + String.join(", ", ALLOWED_EXTENSIONS) + " files are allowed.");
-        }
-
-        // 파일 크기 확인
-        if (imageFile.getSize() > MAX_FILE_SIZE) {
-            log.error("이미지 사이즈가 10MB가 넘음");
-            throw new FileValidationException("File size exceeds the maximum limit (10MB).");
-        }
-        log.info("이미지 유효성 확인 완료");
-    }
-
-    /**
-     * 이미지 로컬 저장 내부 로직 메서드
-     */
-    private String saveImageLocal(MultipartFile imageFile) throws IOException {
-        log.trace("이미지 저장 메서드 실행");
-        // 서버의 로컬에 이미지를 저장할 경로 설정
-        String uploadDir = imageBasePath;
-        File uploadPath = new File(uploadDir);
-
-        // 업로드 경로가 존재하지 않으면 디렉토리 생성
-        if (!uploadPath.exists()) {
-            uploadPath.mkdirs();
-            log.debug("이미지 디렉토리가 존재 하지 않음");
-        }
-
-        // 이미지의 상대 경로를 반환
-        return saveFile(imageFile, uploadPath);
-    }
-
-    /**
-     * 파일 저장 내부 로직 메서드
-     */
-    private String saveFile(MultipartFile imageFile, File uploadPath) throws IOException {
-        log.trace("파일 저장 메서드 실행");
-        // 파일 이름 생성
-        String fileName = System.currentTimeMillis() + "_" + Objects.requireNonNull(imageFile.getOriginalFilename());
-
-        // 이미지를 서버의 로컬에 복사
-        Path imagePath = Path.of(uploadPath.getAbsolutePath() + File.separator + fileName);
-        Files.copy(imageFile.getInputStream(), imagePath, StandardCopyOption.REPLACE_EXISTING);
-        return fileName;
-    }
-
-    // Item -> ResponseDto Mapping
-
-    /**
-     * Item to ItemResponseDto Mapper
-     * + ModelMapper, @Mapping 어노테이션 방법으로 수정?
+     * Item 엔티티를 ItemResponseDto로 변환하는 메서드입니다.
+     * ModelMapper 또는 @Mapping 어노테이션 등을 사용하여 수정할 수 있습니다.
+     *
+     * @param item 변환할 Item 엔티티
+     * @return 변환된 ItemResponseDto
      */
     private ItemResponseDto convertItemToResponseDto(Item item) {
         log.trace("Item to ItemResponseDto Mapper 실행");
@@ -182,6 +119,11 @@ public class ItemService {
         return itemResponseDto;
     }
 
+    /**
+     * 주어진 itemId에 해당하는 Item을 삭제합니다.
+     *
+     * @param itemId 삭제할 Item의 식별자
+     */
     public void deleteItem(Long itemId) {
         itemRepository.deleteById(itemId);
     }
