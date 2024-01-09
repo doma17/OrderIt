@@ -22,3 +22,6 @@ INSERT INTO Item (name, price, image_path, menu) VALUES ('티라미수', 5500, '
 INSERT INTO Item (name, price, image_path, menu) VALUES ('치즈 케이크', 5000, 'dummy_cheese_cake.jpg', 'Dessert');
 INSERT INTO Item (name, price, image_path, menu) VALUES ('초코쿠키', 2000, 'dummy_choco_cookie.jpg', 'Dessert');
 INSERT INTO Item (name, price, image_path, menu) VALUES ('플레인쿠키', 1800, 'dummy_plain_cookie.jpg', 'Dessert');
+
+-- User 데이터 추가
+-- INSERT INTO User (username, password, email, role) VALUES ('kbm1234', 'pw1234', 'rovin1273@gmail.com', 'ADMIN');
